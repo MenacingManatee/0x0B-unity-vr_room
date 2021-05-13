@@ -31,6 +31,7 @@ public class LocomotionTeleport : MonoBehaviour
 	/// The process of teleporting is represented by a simple state machine, and each of the 
 	/// possible states are represented by this enum.
 	/// </summary>
+	public OVRPlayerController oVRPlayerController;
 	public enum States
 	{
 		Ready,
@@ -768,27 +769,29 @@ public class LocomotionTeleport : MonoBehaviour
 	/// </summary>
 	public void DoTeleport()
 	{
-		var character = LocomotionController.CharacterController;
-		var characterTransform = character.transform;
-		var destTransform = _teleportDestination.OrientationIndicator;
+	var character = LocomotionController.CharacterController;
+	oVRPlayerController.enabled = false;
+	var characterTransform = character.transform;
+	var destTransform = _teleportDestination.OrientationIndicator;
 
-		Vector3 destPosition = destTransform.position;
-		destPosition.y += character.height * 0.5f;
-		Quaternion destRotation = _teleportDestination.LandingRotation;// destTransform.rotation;
-#if false
-		Quaternion destRotation = destTransform.rotation;
+	Vector3 destPosition = destTransform.position;
+	destPosition.y += character.height * 0.5f;
+	Quaternion destRotation = _teleportDestination.LandingRotation;// destTransform.rotation;
+	#if false
+	Quaternion destRotation = destTransform.rotation;
 
-		//Debug.Log("Rots: " + destRotation + " " + destTransform.rotation * Quaternion.Euler(0, -LocomotionController.CameraRig.trackingSpace.localEulerAngles.y, 0));
+	//Debug.Log("Rots: " + destRotation + " " + destTransform.rotation * Quaternion.Euler(0, -LocomotionController.CameraRig.trackingSpace.localEulerAngles.y, 0));
 
-		destRotation = destRotation * Quaternion.Euler(0, -LocomotionController.CameraRig.trackingSpace.localEulerAngles.y, 0);
-#endif
-		if (Teleported != null)
-		{
-			Teleported(characterTransform, destPosition, destRotation);
-		}
+	destRotation = destRotation * Quaternion.Euler(0, -LocomotionController.CameraRig.trackingSpace.localEulerAngles.y, 0);
+	#endif
+	if (Teleported != null)
+	{
+	Teleported(characterTransform, destPosition, destRotation);
+	}
 
-		characterTransform.position = destPosition;
-		characterTransform.rotation = destRotation;
+	characterTransform.position = destPosition;
+	characterTransform.rotation = destRotation;
+	oVRPlayerController.enabled = true;
 	}
 
 	/// <summary>
@@ -853,6 +856,6 @@ public class LocomotionTeleport : MonoBehaviour
 
 		characterTransform.position = lerpPosition;
 
-		//LocomotionController.PlayerController.Teleported = true;
+		//0.LocomotionController.PlayerController.Teleported = true;
 	}
 }
